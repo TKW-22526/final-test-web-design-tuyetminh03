@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Liên hệ - Cửa Hàng Hoa</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<nav class="d-flex justify-content-center gap-3 p-3 bg-light shadow-sm">
+
+    <a href="../index.html" class="btn btn-outline-success">Trang chủ</a>
+    <a href="san-pham.html" class="btn btn-outline-success">Sản phẩm</a>
+    <a href="gioi-thieu.html" class="btn btn-outline-success">Giới thiệu</a>
+    <a href="lien-he.html" class="btn btn-success">Liên hệ</a>
+
+</nav>
+
+<div class="container mt-5">
+
+    <h1 class="text-center text-success mb-4">
+        📞 Liên Hệ Với Chúng Tôi
+    </h1>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-4">
+
+            <h4>Thông tin cửa hàng</h4>
+
+            <p>🌸 Cửa hàng hoa tươi Online</p>
+            <p>📍 Địa chỉ: 123 Đường Hoa Hồng, TP. HCM</p>
+            <p>📞 Hotline: 0901 234 567</p>
+            <p>📧 Email: cuahanghoa@gmail.com</p>
+
+            <hr>
+
+            <h5>Giờ làm việc</h5>
+            <p>Thứ 2 - Chủ nhật: 7h00 - 21h00</p>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <h4>Gửi tin nhắn</h4>
+
+            <form onsubmit="sendContact(event)">
+
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="Họ và tên" required>
+                </div>
+
+                <div class="mb-3">
+                    <input type="email" class="form-control" placeholder="Email" required>
+                </div>
+
+                <div class="mb-3">
+                    <textarea class="form-control" rows="4" placeholder="Nội dung liên hệ..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    Gửi liên hệ
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="../js/script.js"></script>
+
+<script>
+function sendContact(event) {
+    event.preventDefault();
+    alert("💌 Gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm nhất.");
+}
+</script>
+
+</body>
+</html>
