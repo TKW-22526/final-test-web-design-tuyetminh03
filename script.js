@@ -1,143 +1,131 @@
+
 let cart = [];
 
-function addToCart(name, price) {
-    let item = cart.find(p => p.name === name);
-
-    if (item) {
-        item.qty += 1;
+function toggleCartBox() {
+    const cartBox = document.getElementById("cart-box");
+    if (cartBox.style.display === "none" || cartBox.style.display === "") {
+        cartBox.style.display = "block";
     } else {
-        cart.push({
-            name: name,
-            price: price,
-            qty: 1
-        });
+        cartBox.style.display = "none";
     }
-
-    renderCart();
 }
 
-function renderCart() {
-    let cartItems = document.getElementById("cart-items");
-    let totalEl = document.getElementById("total");
-    let countEl = document.getElementById("cart-count");
+function addToCart(name, price) {
+    const existingItem = cart.find(item => item.name === name);
 
-    if (!cartItems || !totalEl || !countEl) return;
-
-    if (cart.length === 0) {
-        cartItems.innerHTML = `<p class="text-muted text-center py-3">Giỏ hàng trống</p>`;
-        totalEl.innerText = "0";
-        countEl.innerText = "0";
-        return; 
+    if (existingItem) {
+        
+        existingItem.quantity += 1;
+    } else {
+        
+        cart.push({ name: name, price: price, quantity: 1 });
     }
 
-    cartItems.innerHTML = "";
-    let total = 0;
-    let count = 0;
+    updateCartUI();
+
+}
+
+    const cartCount = document.getElementById("cart-count");
+    const cartItems = document.getElementById("cart-items");
+    const totalElement = document.getElementById("total");
+
+    let totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.innerText = totalCount;
+
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<p class="text-muted text-center py-3">Giỏ hàng trống</p>';
+        totalElement.innerText = "0";
+        return;
+    }
+
+    let itemsHTML = "";
+    let totalPrice = 0;
 
     cart.forEach((item, index) => {
-        total += item.price * item.qty;
-        count += item.qty;
-
-        let formattedPrice = item.price.toLocaleString('vi-VN');
-
-        cartItems.innerHTML += `
-            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+        let itemTotal = item.price * item.quantity;
+        totalPrice += itemTotal;
+        itemsHTML += `
+            <div class="d-flex justify-content-between align-items-center mb-2" style="font-size: 14px;">
                 <div>
-                    <b class="text-dark">${item.name}</b><br>
-                    <small class="text-muted">${formattedPrice}đ x ${item.qty}</small>
+                    <strong>${item.name}</strong><br>
+                    <span class="text-muted">${item.price.toLocaleString()}đ x ${item.quantity}</span>
                 </div>
-                <div class="d-flex align-items-center gap-1">
-                    <button class="btn btn-sm btn-light border p-1 px-2" onclick="changeQty(${index}, -1)">-</button>
-                    <span class="mx-1 fw-bold">${item.qty}</span>
-                    <button class="btn btn-sm btn-light border p-1 px-2" onclick="changeQty(${index}, 1)">+</button>
-                    <button class="btn btn-sm btn-outline-danger border p-1 px-2 ms-2" onclick="removeItem(${index})">✕</button>
+                <div class="text-end">
+                    <span class="fw-bold text-success">${itemTotal.toLocaleString()}đ</span>
+                    <button class="btn btn-sm btn-link text-danger ms-2 p-0 text-decoration-none" onclick="removeItem(${index})">Xóa</button>
                 </div>
             </div>
+            <hr class="my-1">
         `;
     });
 
-    totalEl.innerText = total.toLocaleString('vi-VN');
-    countEl.innerText = count;
-}
-function changeQty(index, value) {
-
-    cart[index].qty += value;
-
-    if (cart[index].qty <= 0) {
-        cart.splice(index, 1);
-    }
-
-    renderCart();
+    cartItems.innerHTML = itemsHTML;
+    totalElement.innerText = totalPrice.toLocaleString();
 }
 
 function removeItem(index) {
     cart.splice(index, 1);
-    renderCart();
+    updateCartUI();
 }
 
 function clearCart() {
     cart = [];
-    renderCart();
+    updateCartUI();
 }
-
-function toggleCart() {
-
-    let box = document.getElementById("cart-box");
-
-    if (!box) return;
-
-    box.style.display = (box.style.display === "block") ? "none" : "block";
-}
-
-window.onload = function () {
-    renderCart();
-};
 
 function openCheckout() {
     if (cart.length === 0) {
-        alert("Giỏ hàng của bạn đang trống! Vui lòng thêm hoa trước khi thanh toán.");
+        alert("Giỏ hàng của bạn đang trống! Vui lòng chọn mua hoa trước khi thanh toán.");
         return;
     }
 
-    let modal = document.getElementById("checkout-modal");
-    let checkoutItems = document.getElementById("checkout-items");
-    let checkoutTotal = document.getElementById("checkout-total");
+    const checkoutModal = document.getElementById("checkout-modal");
+    const checkoutItems = document.getElementById("checkout-items");
+    const checkoutTotal = document.getElementById("checkout-total");
 
-    document.getElementById("cart-box").style.display = "none";
+    let checkoutHTML = "";
+    let totalPrice = 0;
 
-    checkoutItems.innerHTML = "";
-    let total = 0;
     cart.forEach(item => {
-        total += item.price * item.qty;
-        checkoutItems.innerHTML += `
-            <div class="d-flex justify-content-between my-1">
-                <span>🌸 ${item.name} (x${item.qty})</span>
-                <span>${(item.price * item.qty).toLocaleString('vi-VN')}đ</span>
+        let itemTotal = item.price * item.quantity;
+        totalPrice += itemTotal;
+        checkoutHTML += `
+            <div class="d-flex justify-content-between mb-2">
+                <span>${item.name} (x${item.quantity})</span>
+                <span class="fw-bold">${itemTotal.toLocaleString()}đ</span>
             </div>
         `;
     });
 
-    checkoutTotal.innerText = total.toLocaleString('vi-VN');
+    checkoutItems.innerHTML = checkoutHTML;
+    checkoutTotal.innerText = totalPrice.toLocaleString();
 
-    modal.classList.remove("d-none");
+    checkoutModal.classList.remove("d-none");
+    document.getElementById("cart-box").style.display = "none"; 
 }
 
 function closeCheckout() {
-    let modal = document.getElementById("checkout-modal");
-    modal.classList.add("d-none");
+    document.getElementById("checkout-modal").classList.add("d-none");
 }
 
 function confirmOrder(event) {
-    event.preventDefault(); 
-    let name = document.getElementById("cus-name").value;
-    let phone = document.getElementById("cus-phone").value;
-    let address = document.getElementById("cus-address").value;
 
-    alert(`🎉 ĐẶT HÀNG THÀNH CÔNG! 🎉\n\nCảm ơn bạn ${name} đã ủng hộ cửa hàng hoa!\nĐơn hàng sẽ được giao đến địa chỉ: ${address} trong thời gian sớm nhất.\nNhân viên sẽ liên hệ với bạn qua SĐT: ${phone}.`);
+    event.preventDefault();
+    const name = document.getElementById("cus-name").value;
+    const phone = document.getElementById("cus-phone").value;
+    const address = document.getElementById("cus-address").value;
+    const totalAmount = document.getElementById("checkout-total").innerText;
 
-    document.getElementById("checkout-form").reset();
-
-    closeCheckout();
+    alert(
+        `🎉 ĐẶT HÀNG THÀNH CÔNG! 🎉\n\n` +
+        `👤 Người nhận: ${name}\n` +
+        `📞 Số điện thoại: ${phone}\n` +
+        `📍 Địa chỉ giao hàng: ${address}\n` +
+        `💰 Tổng tiền đơn hàng: ${totalAmount}đ\n\n` +
+        `Cửa hàng hoa sẽ liên hệ giao hàng sớm nhất cho bạn!`
+    );
 
     clearCart();
+    document.getElementById("checkout-form").reset();
+    closeCheckout();
 }
